@@ -1,0 +1,25 @@
+DB PROJECT PROPOSAL
+
+K24-2559
+
+Introduction:
+For my project I have chosen an online bookstore management system. Traditional bookstores
+often rely on manual systems for managing books, customers, and sales. This can lead to
+inefficiency in inventory tracking, difficulty in managing orders, and limited accessibility for
+customers who must visit the store physically. The purpose of the Online Bookstore System is to
+provide a web-based platform that allows customers to browse and purchase books online
+while enabling administrators to manage book inventory, authors, categories, and customer
+orders efficiently through a structured relational database.
+
+System functionality:
+The system will perform operations which are role defined. Customers can register/log-in,
+browse books, purchase books and view order history (more features might be added as I build
+the project). The administrator will manage all the tables like books, categories, orders etc.
+
+System Users:
+There will be two kinds of users, customers who use the system and the administrator who will
+manage the system.
+
+Technologies Used:
+On the front end HTML, CSS and JavaScript will be used (Bootstrap might also be used). On the
+back end Python will be used and for the database MySql will be used.
