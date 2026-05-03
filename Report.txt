@@ -1,0 +1,45 @@
+Book Store Management System
+K242559
+Introduction (Aim / Motivation)
+The aim of this project is to design and develop a database-driven online bookstore web application that allows customers to browse, search, purchase, and manage books online while enabling administrators to maintain inventory and order records. The project demonstrates practical implementation of database management concepts in a real-world e-commerce scenario.
+________________________________________
+Background (Research & Project Selection)
+Online bookstores are widely used e-commerce platforms that require structured data management for books, customers, authors, orders, and inventory. This project was selected because it provides a realistic business case for implementing relational database concepts such as normalization, relationships, transactions, triggers, views, and dynamic queries.
+________________________________________
+Project Specification
+The system is a web-based bookstore built using MySQL, PHP, Apache/XAMPP, HTML, and CSS.
+It supports customer registration/login, book browsing, searching/filtering, cart management, order placement, and administrative inventory management.
+________________________________________
+Problem Analysis
+Managing bookstore operations manually or with poorly structured systems can lead to inventory inconsistencies, inefficient searching, inaccurate order processing, and poor user experience. A centralized relational database solution is required to ensure data integrity, efficient retrieval, and transactional consistency.
+________________________________________
+
+
+Solution Design (Project Detail, Functionality & Features)
+The solution uses a relational database schema with entities including books, authors, customers, publishers, genres, carts, orders, and order items.
+Key features include:
+•	User registration and login 
+•	Search books by name, author, or genre (not yet implemented)
+•	Shopping cart functionality 
+•	Checkout and order processing 
+•	Stock management and validation 
+•	Admin CRUD operations for inventory 
+________________________________________
+Implementation & Testing Phase
+The database is implemented in MySQL with tables, views, foreign keys, triggers, constraints, and transactions.
+The frontend and backend are developed using PHP with dynamic SQL query handling.
+Testing includes validation of user authentication, cart operations, checkout process, stock updates, and database integrity constraints.
+________________________________________
+Project Breakdown Structure (Workload Distribution with Timeline)
+•	Week 1: Requirements gathering and project planning 
+•	Week 2: ER diagram and database schema design 
+•	Week 3: Database implementation in MySQL 
+•	Week 4: Backend PHP connection and testing 
+•	Week 5: Frontend development and integration 
+•	Week 6: Search, cart, and checkout implementation 
+•	Week 7: Admin features and advanced SQL integration 
+•	Week 8: Testing, debugging, and final documentation 
+________________________________________
+Conclusion (Summary & Discussion)
+The Online Bookstore Management System provides a practical implementation of database management principles in a real-world application. It demonstrates efficient relational design, secure user handling, transactional processing, and dynamic web integration while fulfilling all required DBMS project objectives.
+
