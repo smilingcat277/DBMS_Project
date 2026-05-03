@@ -8,17 +8,16 @@ $result = $conn->query($sql);
 <?php
 session_start();
 
-// If the session variable is NOT set, redirect them to login page
+
 if (!isset($_SESSION['customer_id'])) {
     header("Location: login.php");
     exit();
 }
 
 require_once 'db.php';
-// ... rest of your code ...
+
 ?>
 
-<!-- Somewhere in your HTML Navigation Bar -->
 <div class="navbar">
     <p>Welcome, <?php echo htmlspecialchars($_SESSION['first_name']); ?>!</p>
     <a href="logout.php">Log Out</a>

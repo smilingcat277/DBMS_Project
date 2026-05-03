@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-// 1. Clear all session variables
+
 $_SESSION = array();
 
-// 2. Destroy the session cookie in the browser
+
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -13,10 +13,10 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// 3. Destroy the session on the server
+
 session_destroy();
 
-// 4. Redirect back to login page
+
 header("Location: login.php");
 exit();
 ?>

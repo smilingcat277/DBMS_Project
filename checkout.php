@@ -2,19 +2,19 @@
 session_start();
 require_once 'db.php';
 
-// 1. Ensure the user is logged in
+
 if (!isset($_SESSION['customer_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// 2. Ensure cart is not empty
+
 if (empty($_SESSION['cart'])) {
     header("Location: cart.php");
     exit();
 }
 
-// Enable strict MySQLi error reporting so the try-catch block catches any DB query failures
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $customer_id = $_SESSION['customer_id'];
@@ -25,13 +25,13 @@ $order_id = 0;
 $total_price = 0.00;
 
 try {
-    // 3. START TRANSACTION
-    // Guarantees all queries succeed together, or fail together (ACID Compliance)
+    
+    
     $conn->begin_transaction();
 
     $order_items_data = [];
 
-    // 4. Lock rows, verify stock, and calculate price from DB
+    
     $stmt_check = $conn->prepare("SELECT book_name, price, stock FROM Books WHERE book_id = ? FOR UPDATE");
 
     foreach ($cart as $book_id => $quantity) {
@@ -40,7 +40,7 @@ try {
         $result = $stmt_check->get_result();
         
         if ($row = $result->fetch_assoc()) {
-            // Concurrency check: If someone else bought the last copy before they clicked checkout
+            
             if ($row['stock'] < $quantity) {
                 throw new Exception("Not enough stock for '" . $row['book_name'] . "'. Only " . $row['stock'] . " left.");
             }
@@ -48,7 +48,7 @@ try {
             $unit_price = $row['price'];
             $total_price += ($unit_price * $quantity);
             
-            // Save data for insertion later
+            
             $order_items_data[] = [
                 'book_id' => $book_id,
                 'quantity' => $quantity,
@@ -60,41 +60,41 @@ try {
     }
     $stmt_check->close();
 
-    // 5. Insert into Orders table
+    
     $status = 'Confirmed'; 
     $stmt_order = $conn->prepare("INSERT INTO Orders (customer_id, status, total_price) VALUES (?, ?, ?)");
     $stmt_order->bind_param("isd", $customer_id, $status, $total_price);
     $stmt_order->execute();
     
-    // 6. Get the newly generated Order ID
+    
     $order_id = $conn->insert_id;
     $stmt_order->close();
 
-    // 7. Insert into Order_items AND Update Books stock
+    
     $stmt_item = $conn->prepare("INSERT INTO Order_items (order_id, book_id, quantity, unit_price) VALUES (?, ?, ?, ?)");
 
     foreach ($order_items_data as $item) {
-        // Insert Item
+        
         $stmt_item->bind_param("iiid", $order_id, $item['book_id'], $item['quantity'], $item['unit_price']);
         $stmt_item->execute();
     }
     
     $stmt_item->close();
 
-    // 8. COMMIT TRANSACTION - Everything was successful
+    
     $conn->commit();
     $checkout_success = true;
 
-    // 9. Clear the cart
+    
     unset($_SESSION['cart']);
 
 } catch (Exception $e) {
-    // SOMETHING FAILED! Rollback all changes to the database
+    
     $conn->rollback();
     $error_message = $e->getMessage();
 }
 
-// Calculate cart count for navbar (will be 0 if checkout succeeded)
+
 $cart_count = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
 ?>
 

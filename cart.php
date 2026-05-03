@@ -2,24 +2,24 @@
 session_start();
 require_once 'db.php';
 
-// Ensure the user is logged in
+
 if (!isset($_SESSION['customer_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Initialize cart if not set
+
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Handle Remove from Cart
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_item'])) {
     $book_id = $_POST['book_id'];
     if (isset($_SESSION['cart'][$book_id])) {
         unset($_SESSION['cart'][$book_id]);
     }
-    // Redirect to self to prevent form resubmission on refresh
+    
     header("Location: cart.php");
     exit();
 }
@@ -79,16 +79,16 @@ $total_price = 0.00;
             </thead>
             <tbody>
                 <?php
-                // Get all book IDs from the cart session
+                
                 $book_ids = array_keys($_SESSION['cart']);
                 
-                // Create placeholders for the SQL IN clause based on the number of items
+                
                 $placeholders = implode(',', array_fill(0, count($book_ids), '?'));
                 
-                // Prepare the statement to fetch book details
+                
                 $stmt = $conn->prepare("SELECT book_id, book_name, price FROM Books WHERE book_id IN ($placeholders)");
                 
-                // Dynamically bind the parameters
+                
                 $types = str_repeat('i', count($book_ids));
                 $stmt->bind_param($types, ...$book_ids);
                 $stmt->execute();

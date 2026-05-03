@@ -1,64 +1,75 @@
 <?php
-// Start the session at the very top of the file
+
 session_start();
 
-// Real-world practice: If the user is already logged in, redirect them to the homepage
+
 if (isset($_SESSION['customer_id'])) {
-    header("Location: books.php");
+    
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'A') {
+        header("Location: admin/dashboard.php");
+    } else {
+        header("Location: books.php");
+    }
     exit();
 }
 
-// Include database connection
+
 require_once 'db.php';
 
 $email = "";
 $error = "";
 
-// Check if form is submitted
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $email = trim($_POST['email']);
-    $password = $_POST['password']; // Do not trim passwords
+    $password = $_POST['password']; 
 
-    // Validate inputs
+    
     if (empty($email) || empty($password)) {
         $error = "Please enter both email and password.";
     } else {
-        // Prepare a statement to get the user's data based on email
-        // Note: Column name in your DDL is 'pass_word'
-        $query = "SELECT customer_id, first_name, pass_word FROM customers WHERE email = ?";
+        
+        
+        $query = "SELECT customer_id, first_name, pass_word, role FROM customers WHERE email = ?";
         
         if ($stmt = $conn->prepare($query)) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $stmt->store_result();
             
-            // Check if email exists
+            
             if ($stmt->num_rows == 1) {
-                // Bind result variables
-                $stmt->bind_result($customer_id, $first_name, $hashed_password);
+                
+                $stmt->bind_result($customer_id, $first_name, $hashed_password, $role);
                 $stmt->fetch();
                 
-                // Verify the password against the hash
+                
                 if (password_verify($password, $hashed_password)) {
                     
-                    // REAL-WORLD SECURITY: Prevent Session Fixation attacks
+                    
                     session_regenerate_id(true);
                     
-                    // Store data in session variables
+                    
                     $_SESSION['customer_id'] = $customer_id;
                     $_SESSION['first_name'] = $first_name;
                     $_SESSION['email'] = $email;
+                    $_SESSION['role'] = $role; 
                     
-                    // Redirect user to the main books page or homepage
-                    header("Location: books.php");
+                    
+                    if ($role === 'A') {
+                        header("Location: admin/dashboard.php");
+                    } else {
+                        header("Location: books.php");
+                    }
                     exit();
+                    
                 } else {
-                    // Real-world practice: Generic error message
+                    
                     $error = "Invalid email or password.";
                 }
             } else {
-                // Don't tell the user "Email not found" for security reasons!
+                
                 $error = "Invalid email or password.";
             }
             $stmt->close();
@@ -89,9 +100,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <div class="container">
-    <h2>Customer Login</h2>
+    <h2>Login</h2>
 
-    <!-- Display Error Message -->
     <?php if (!empty($error)): ?>
         <div class="error"><?php echo $error; ?></div>
     <?php endif; ?>

@@ -2,7 +2,7 @@
 session_start();
 require_once 'db.php';
 
-$first_name = $last_name = $email = $password = $house_no = $city = $postal_code = $country = $phone_no = "";
+$first_name = $last_name = $email = $password = $house_no = $city = $country = $phone_no = "";
 $errors = [];
 $success_message = "";
 
@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password']; 
     $house_no = trim($_POST['house_no']);
     $city = trim($_POST['city']);
-    $postal_code = trim($_POST['postal_code']);
     $country = trim($_POST['country']);
     $phone_no = trim($_POST['phone_no']);
 
@@ -26,8 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($phone_no)) $errors[] = "Phone number is required.";
     if (empty($password)) $errors[] = "Password is required.";
     elseif (strlen($password) < 6) $errors[] = "Password must be at least 6 characters long.";
-
-    if (empty($postal_code)) $postal_code = '0';
 
     if (empty($email)) {
         $errors[] = "Email is required.";
@@ -47,14 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $insert_query = "INSERT INTO customers (first_name, last_name, email, pass_word, house_no, city, postal_code, country, phone_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insert_query = "INSERT INTO customers (first_name, last_name, email, pass_word, house_no, city, country, phone_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         if ($stmt = $conn->prepare($insert_query)) {
-            $stmt->bind_param("sssssssss", $first_name, $last_name, $email, $hashed_password, $house_no, $city, $postal_code, $country, $phone_no);
+            $stmt->bind_param("ssssssss", $first_name, $last_name, $email, $hashed_password, $house_no, $city, $country, $phone_no);
             
             if ($stmt->execute()) {
                 $success_message = "Registration successful! You can now <a href='login.php'>log in here</a>.";
-                $first_name = $last_name = $email = $house_no = $city = $postal_code = $country = $phone_no = "";
+                $first_name = $last_name = $email = $house_no = $city = $country = $phone_no = "";
             } else {
                 $errors[] = "Something went wrong. Please try again later.";
             }
@@ -123,7 +120,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="password" name="password" required>
         </div>
 
-        <!-- UPDATED HOUSE/FLAT NO SECTION -->
         <div class="form-group">
             <label>House No / Flat No *</label>
             <input type="text" name="house_no" value="<?php echo htmlspecialchars($house_no); ?>" placeholder="e.g., House 12 or Flat 4B" required>
@@ -133,11 +129,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-group">
             <label>City *</label>
             <input type="text" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
-        </div>
-
-        <div class="form-group">
-            <label>Postal Code *</label>
-            <input type="text" name="postal_code" value="<?php echo htmlspecialchars($postal_code); ?>" required>
         </div>
 
         <div class="form-group">

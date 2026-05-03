@@ -2,13 +2,13 @@
 session_start();
 require_once 'db.php';
 
-// Ensure the user is logged in
+
 if (!isset($_SESSION['customer_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Initialize the cart session if it doesn't exist
+
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
@@ -16,21 +16,21 @@ if (!isset($_SESSION['cart'])) {
 $message = "";
 $error_message = "";
 
-// Handle Add to Cart action
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
     $book_id = $_POST['book_id'];
     
-    // 1. Fetch the actual stock from the database to check if we can add more
+    
     $stmt = $conn->prepare("SELECT stock FROM Books WHERE book_id = ?");
     $stmt->bind_param("i", $book_id);
     $stmt->execute();
     $stmt->bind_result($db_stock);
     
     if ($stmt->fetch()) {
-        // How many of this book are already in the cart?
+        
         $current_cart_qty = isset($_SESSION['cart'][$book_id]) ? $_SESSION['cart'][$book_id] : 0;
         
-        // 2. Only allow adding if cart quantity is less than database stock
+        
         if ($current_cart_qty < $db_stock) {
             $_SESSION['cart'][$book_id] = $current_cart_qty + 1;
             $message = "Book added to cart successfully!";
@@ -41,10 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
     $stmt->close();
 }
 
-// Calculate total items in cart for the navigation bar
+
 $cart_count = array_sum($_SESSION['cart']);
 
-// Fetch books from the database using your View
+
 $query = "SELECT * FROM book_details";
 $result = $conn->query($query);
 ?>
@@ -95,7 +95,7 @@ $result = $conn->query($query);
         <?php if ($result->num_rows > 0): ?>
             <?php while($row = $result->fetch_assoc()): ?>
                 <?php 
-                    // Calculate how many are left based on what is currently in the session cart
+                    
                     $in_cart = isset($_SESSION['cart'][$row['book_id']]) ? $_SESSION['cart'][$row['book_id']] : 0;
                     $available_stock = $row['stock'] - $in_cart;
                 ?>
